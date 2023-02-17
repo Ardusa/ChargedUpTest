@@ -48,7 +48,6 @@ public class Music extends SubsystemBase {
     }
 
     public static void loadSong(String filename) {
-        mOrchestra.loadMusic(filename);
         Song = filename;
     }
 
