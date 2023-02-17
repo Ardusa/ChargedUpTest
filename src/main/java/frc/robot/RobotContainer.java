@@ -94,7 +94,7 @@ public class RobotContainer {
             mManipController.getStartButton(),
             false,
             talon1,
-            talon1
+            talon2
         )
         );        
 
