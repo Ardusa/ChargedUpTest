@@ -16,6 +16,10 @@ import com.ctre.phoenix.music.Orchestra;
 public class Music extends SubsystemBase {
     private static Music mMusic;
     static Orchestra mOrchestra;
+    static Orchestra Orchestra1;
+    static Orchestra Orchestra2;
+    static Orchestra Orchestra3;
+    static Orchestra Orchestra4;
 
     public static final TalonFX talon1 = new TalonFX(OperatorConstants.talon1_ID);
     public static final TalonFX talon2 = new TalonFX(OperatorConstants.talon2_ID);
@@ -52,7 +56,12 @@ public class Music extends SubsystemBase {
             instruments.add(motors[i]);
         }
         
-        mOrchestra = new Orchestra(instruments);
+        //mOrchestra = new Orchestra(instruments);
+        Orchestra1.addInstrument(talon1);
+        Orchestra2.addInstrument(talon2);
+        Orchestra3.addInstrument(talon3);
+        Orchestra4.addInstrument(talon4);
+        
 //        restartPlaylist();
     }    
     
@@ -70,7 +79,12 @@ public class Music extends SubsystemBase {
     
     public void loadSong(String filename) {
         Song = filename;
-        mOrchestra.loadMusic(File.separator + "home" + File.separator + "lvuser" + File.separator + "deploy" + File.separator + playlist[1]);
+        //mOrchestra.loadMusic(File.separator + "home" + File.separator + "lvuser" + File.separator + "deploy" + File.separator + playlist[1]);
+        Orchestra1.loadMusic(File.separator + "home" + File.separator + "lvuser" + File.separator + "deploy" + File.separator + playlist[1]);
+        Orchestra2.loadMusic(File.separator + "home" + File.separator + "lvuser" + File.separator + "deploy" + File.separator + playlist[1]);
+        Orchestra3.loadMusic(File.separator + "home" + File.separator + "lvuser" + File.separator + "deploy" + File.separator + playlist[1]);
+        Orchestra4.loadMusic(File.separator + "home" + File.separator + "lvuser" + File.separator + "deploy" + File.separator + playlist[1]);
+        
         System.out.println("LoadSong triggered");
 
         //home/lvuser/deploy
