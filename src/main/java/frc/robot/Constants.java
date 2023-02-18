@@ -15,5 +15,14 @@ package frc.robot;
 public final class Constants {
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
+
+    public static final int talon1_ID = 1;
+
+    public static final int talon2_ID = 2;
+
+    public static final int talon3_ID = 3;
+
+    public static final int talon4_ID = 4;
+
   }
 }

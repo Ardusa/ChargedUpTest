@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.MusicCMD;
 import frc.robot.subsystems.*;
 
@@ -21,33 +22,25 @@ import frc.robot.subsystems.*;
  */
 public class RobotContainer {
     /* Controllers */
-    private final XboxController mDriverController = new XboxController(0);
-    private final XboxController mManipController = new XboxController(1);
+    private final XboxController xDrive = new XboxController(OperatorConstants.kDriverControllerPort);
 
 
-    private TalonFX talonShoulder, talonElbow;
-    private final int translationAxis = XboxController.Axis.kLeftY.value;
-    private final int strafeAxis = XboxController.Axis.kLeftX.value;
-    private final int rotationAxis = XboxController.Axis.kRightX.value;
-  
     // private final Hand mHand = Hand.getInstance();
     // private final Arm mArm = Arm.getInstance();
 
   //private final Drivetrain mDrivetrain = Drivetrain.getInstance();
 //   private final Vision mVision = Vision.getInstance();
 
-    /* Driver Buttons */
+    /* Driver Buttons
     private final JoystickButton zeroGyro = new JoystickButton(mDriverController, XboxController.Button.kBack.value);
     private final JoystickButton robotCentric = new JoystickButton(mDriverController, XboxController.Button.kLeftBumper.value);
+    */
 
     /* Subsystems */
 
+    private final Drivetrain mDrivetrain = new Drivetrain();
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
-        talonShoulder = new TalonFX(50);
-        talonElbow = new TalonFX(51);
-
-
         
         // if(mDriverController.getAButton()) {
         //     new Flatten(0.3); 
@@ -85,16 +78,14 @@ public class RobotContainer {
         // );
         // // Configure the button bindings
 
-            //Music Selector
-        TalonFX talon1 = new TalonFX(50);
-        TalonFX talon2 = new TalonFX(51);
+            //Music Selector  
         Music mMusic = Music.getInstance();
         mMusic.setDefaultCommand(new MusicCMD(
-            mManipController.getStartButton(),
-            mManipController.getStartButton(),
-            false,
-            talon1,
-            talon2
+            Music.getInstance()
+//            Music.talon1,
+//            Music.talon2,
+//            Music.talon3,
+//            Music.talon4
         )
         );        
 

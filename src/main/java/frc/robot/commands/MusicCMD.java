@@ -2,47 +2,57 @@ package frc.robot.commands;
 
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.Music;
 
 public class MusicCMD extends CommandBase {
-    private Boolean CMD1;
-    private Boolean CMD2;
-    private Boolean CMD3;
+    private final XboxController xDrive = new XboxController(OperatorConstants.kDriverControllerPort);
 
-    public MusicCMD(Boolean Command1, Boolean Command2, Boolean Command3, TalonFX ... talonFXs) {
-        CMD1 = Command1;
-        CMD2 = Command2;
-        CMD3 = Command3;
+    private final Music mMusic;
 
+    public MusicCMD(Music mMusic, TalonFX ... talonFXs) {
             
-        for(int i = 0; i < talonFXs.length; i++) {
-//            talonFXs[i].changeMotionControlFramePeriod(0);
-            Music.addInstrument(talonFXs[i]);
-        }
+//        for(int i = 0; i < talonFXs.length; i++) {
+//            Music.addInstrument(talonFXs[i]);
+//       }
+        this.mMusic = mMusic;
+        addRequirements(mMusic);
     }
 
     @Override
     public void initialize() {
         SmartDashboard.putString("Music Player", "Activated");
+        System.out.println("Initialized");
+//        Music.loadSong(Music.playlistOrder());
     }
 
     @Override
     public void execute() {
-        if (CMD1) {
-            Music.playSong();
+        System.out.println("Executed");
+        if (xDrive.getAButton()) {
+            mMusic.playSong();
+            System.out.println("CMD1");
         }
-        if (CMD2) {
-            Music.pauseSong();
+        if (xDrive.getBButton()) {
+            mMusic.pauseSong();
+            System.out.println("CMD2");
         }
-        if (CMD3) {
-            Music.loadSong(Music.playlistOrder());
+        if (xDrive.getYButton()) {
+            mMusic.loadSong(Music.playlistOrder());
+//            Music.loadSong(null);
+            System.out.println("CMD1");
+        if (xDrive.getXButton()) {
+            System.out.println("CMD4");
         }
+}
         Music.defaultCode();
     }
 
     public void end() {
         SmartDashboard.putString("Music Player", "Deactivated");
+        System.out.println("Ended");
     }
 }
