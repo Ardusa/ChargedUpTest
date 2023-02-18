@@ -29,19 +29,26 @@ public class MusicCMD extends CommandBase {
 //        Music.loadSong(Music.playlistOrder());
     }
 
+//A for Play
+//B for Pause
+//Y for LoadSong
+
     @Override
     public void execute() {
+        
+        mMusic.setSpeed(xDrive.getLeftTriggerAxis()* 0.5);
+        
         System.out.println("Executed");
-        if (xDrive.getAButton()) {
-            mMusic.playSong();
+        if (xDrive.getAButton()) {  
+            Music.playSong();
             System.out.println("CMD1");
         }
         if (xDrive.getBButton()) {
-            mMusic.pauseSong();
+            Music.pauseSong();
             System.out.println("CMD2");
         }
         if (xDrive.getYButton()) {
-            mMusic.loadSong(Music.playlistOrder());
+            Music.loadSong(Music.playlistOrder());
 //            Music.loadSong(null);
             System.out.println("CMD1");
         if (xDrive.getXButton()) {

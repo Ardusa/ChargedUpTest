@@ -16,10 +16,10 @@ import com.ctre.phoenix.music.Orchestra;
 public class Music extends SubsystemBase {
     private static Music mMusic;
     static Orchestra mOrchestra;
-    static Orchestra Orchestra1;
-    static Orchestra Orchestra2;
-    static Orchestra Orchestra3;
-    static Orchestra Orchestra4;
+    static Orchestra Orchestra1 = new Orchestra();
+    static Orchestra Orchestra2 = new Orchestra();
+    static Orchestra Orchestra3 = new Orchestra();
+    static Orchestra Orchestra4 = new Orchestra();
 
     public static final TalonFX talon1 = new TalonFX(OperatorConstants.talon1_ID);
     public static final TalonFX talon2 = new TalonFX(OperatorConstants.talon2_ID);
@@ -35,7 +35,8 @@ public class Music extends SubsystemBase {
     public static String[] playlist = {
         "Crab-Rave.chrp",
         "Offender-Shuffle.chrp",
-        "Chairmans-Rap.chrp"
+        "Chairmans-Rap.chrp",
+        "HotCrossBuns.chrp"
     };
 
     public static int playlistLength = playlist.length;
@@ -56,11 +57,11 @@ public class Music extends SubsystemBase {
             instruments.add(motors[i]);
         }
         
-        //mOrchestra = new Orchestra(instruments);
-        Orchestra1.addInstrument(talon1);
-        Orchestra2.addInstrument(talon2);
-        Orchestra3.addInstrument(talon3);
-        Orchestra4.addInstrument(talon4);
+        mOrchestra = new Orchestra(instruments);
+        //Orchestra1.addInstrument(talon1);
+        //Orchestra2.addInstrument(talon2);
+        //Orchestra3.addInstrument(talon3);
+        //Orchestra4.addInstrument(talon4);
         
 //        restartPlaylist();
     }    
@@ -73,34 +74,39 @@ public class Music extends SubsystemBase {
         // TalonFX talonFX = new TalonFX(0);
     }
 
-    public void playSong() {
+    public static void playSong() {
         mOrchestra.play();
+        //Orchestra1.play();
+        //Orchestra2.play();
+        //Orchestra3.play();
+        //Orchestra4.play();
     }
     
-    public void loadSong(String filename) {
+    public static void loadSong(String filename) {
         Song = filename;
-        //mOrchestra.loadMusic(File.separator + "home" + File.separator + "lvuser" + File.separator + "deploy" + File.separator + playlist[1]);
-        Orchestra1.loadMusic(File.separator + "home" + File.separator + "lvuser" + File.separator + "deploy" + File.separator + playlist[1]);
-        Orchestra2.loadMusic(File.separator + "home" + File.separator + "lvuser" + File.separator + "deploy" + File.separator + playlist[1]);
-        Orchestra3.loadMusic(File.separator + "home" + File.separator + "lvuser" + File.separator + "deploy" + File.separator + playlist[1]);
-        Orchestra4.loadMusic(File.separator + "home" + File.separator + "lvuser" + File.separator + "deploy" + File.separator + playlist[1]);
+        mOrchestra.loadMusic(File.separator + "home" + File.separator + "lvuser" + File.separator + "deploy" + File.separator + playlist[3]);
+        //Orchestra1.loadMusic(File.separator + "home" + File.separator + "lvuser" + File.separator + "deploy" + File.separator + "Crab-Rave.chrp");
+        //Orchestra2.loadMusic(File.separator + "home" + File.separator + "lvuser" + File.separator + "deploy" + File.separator + "Crab-Rave.chrp");
+        //Orchestra3.loadMusic(File.separator + "home" + File.separator + "lvuser" + File.separator + "deploy" + File.separator + "Crab-Rave.chrp");
+        //Orchestra4.loadMusic(File.separator + "home" + File.separator + "lvuser" + File.separator + "deploy" + File.separator + "Crab-Rave.chrp");
         
         System.out.println("LoadSong triggered");
 
         //home/lvuser/deploy
     }
     
-    public void pauseSong() {
+    public static void pauseSong() {
         mOrchestra.pause();
+        //Orchestra1.pause();
+        //Orchestra2.pause();
+        //Orchestra3.pause();
+        //Orchestra4.pause();
+
         System.out.println("Pause Song triggered");
     }
     
     public static void addInstrument() {
-        mOrchestra.clearInstruments();
-        mOrchestra.addInstrument(talon1);
-        mOrchestra.addInstrument(talon2);
-        mOrchestra.addInstrument(talon3);
-        mOrchestra.addInstrument(talon4);
+        //mOrchestra.clearInstruments();
         System.out.println("addInstrument triggered");
     }
     
@@ -138,10 +144,10 @@ public class Music extends SubsystemBase {
     public void setSpeed(double speed) {
         System.out.println("setSpeed triggered");
 
-        talon1.set(ControlMode.PercentOutput, speed);
-        talon2.set(ControlMode.PercentOutput, speed);
-        talon3.set(ControlMode.PercentOutput, speed);
-        talon4.set(ControlMode.PercentOutput, speed);
+        talon1.set(ControlMode.MusicTone, 261.63 * speed);
+        talon2.set(ControlMode.MusicTone, 440 * speed);
+        talon3.set(ControlMode.MusicTone, 329.63 * speed);
+        talon4.set(ControlMode.MusicTone, 0 * speed);
     }
 
 }
