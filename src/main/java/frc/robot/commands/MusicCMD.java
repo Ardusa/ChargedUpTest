@@ -25,8 +25,7 @@ public class MusicCMD extends CommandBase {
     @Override
     public void initialize() {
         SmartDashboard.putString("Music Player", "Activated");
-        System.out.println("Initialized");
-//        Music.loadSong(Music.playlistOrder());
+        Music.loadSong(Music.playlistOrder());
     }
 
 //A for Play
@@ -37,8 +36,6 @@ public class MusicCMD extends CommandBase {
     public void execute() {
         
         mMusic.setSpeed(xDrive.getLeftTriggerAxis()* 0.5);
-        
-        System.out.println("Executed");
         if (xDrive.getAButton()) {  
             Music.playSong();
             System.out.println("CMD1");

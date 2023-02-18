@@ -2,13 +2,17 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.OperatorConstants;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.PWM;
+import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.motorcontrol.Talon;
 
 import java.io.File;
 import java.util.ArrayList;
 
+import com.ctre.phoenix.CANifier.PWMChannel;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.music.Orchestra;
@@ -20,6 +24,7 @@ public class Music extends SubsystemBase {
     static Orchestra Orchestra2 = new Orchestra();
     static Orchestra Orchestra3 = new Orchestra();
     static Orchestra Orchestra4 = new Orchestra();
+    private static final Spark blinken = new Spark(0);
 
     public static final TalonFX talon1 = new TalonFX(OperatorConstants.talon1_ID);
     public static final TalonFX talon2 = new TalonFX(OperatorConstants.talon2_ID);
@@ -33,11 +38,16 @@ public class Music extends SubsystemBase {
     private static String Song = "Song";
 
     public static String[] playlist = {
-        "Crab-Rave.chrp",
-        "Offender-Shuffle.chrp",
-        "Chairmans-Rap.chrp",
+        "TwinkleStar.chrp",
         "HotCrossBuns.chrp"
     };
+
+    public static int[] songLength = {
+        29000, //Seconds
+        29000
+    };
+
+    public static int x = playlist.length;
 
     public static int playlistLength = playlist.length;
 
@@ -67,8 +77,13 @@ public class Music extends SubsystemBase {
     }    
     
     public static void defaultCode() {
+        if (mOrchestra.getCurrentTime() >= (songLength[SongNum] + 200)) {
+            loadSong(playlistOrder());
+            playSong();
+        }
         SmartDashboard.putNumber("TimeStamp", mOrchestra.getCurrentTime());
         SmartDashboard.putString("Song", Song);
+        lights();
 //        playerStatus();
 
         // TalonFX talonFX = new TalonFX(0);
@@ -84,7 +99,7 @@ public class Music extends SubsystemBase {
     
     public static void loadSong(String filename) {
         Song = filename;
-        mOrchestra.loadMusic(File.separator + "home" + File.separator + "lvuser" + File.separator + "deploy" + File.separator + playlist[3]);
+        mOrchestra.loadMusic(File.separator + "home" + File.separator + "lvuser" + File.separator + "deploy" + File.separator + filename);
         //Orchestra1.loadMusic(File.separator + "home" + File.separator + "lvuser" + File.separator + "deploy" + File.separator + "Crab-Rave.chrp");
         //Orchestra2.loadMusic(File.separator + "home" + File.separator + "lvuser" + File.separator + "deploy" + File.separator + "Crab-Rave.chrp");
         //Orchestra3.loadMusic(File.separator + "home" + File.separator + "lvuser" + File.separator + "deploy" + File.separator + "Crab-Rave.chrp");
@@ -120,6 +135,13 @@ public class Music extends SubsystemBase {
         return playlist[SongNum];
     }
     
+    public static void lights() {
+        if (mOrchestra.isPlaying()) {
+            blinken.set(0.03);
+        } else {
+            blinken.set(0.53);
+        }
+    }
     /*
 
     public static void skipSong() {
@@ -142,8 +164,6 @@ public class Music extends SubsystemBase {
     }
 */
     public void setSpeed(double speed) {
-        System.out.println("setSpeed triggered");
-
         talon1.set(ControlMode.MusicTone, 261.63 * speed);
         talon2.set(ControlMode.MusicTone, 440 * speed);
         talon3.set(ControlMode.MusicTone, 329.63 * speed);
