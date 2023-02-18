@@ -12,20 +12,25 @@ public class MusicCMD extends CommandBase {
     private final XboxController xDrive = new XboxController(OperatorConstants.kDriverControllerPort);
 
     private final Music mMusic;
+    private TalonFX[] talonFXs;
 
-    public MusicCMD(Music mMusic, TalonFX ... talonFXs) {
+    public MusicCMD(Music mMusic, TalonFX ... talons) {
             
 //        for(int i = 0; i < talonFXs.length; i++) {
 //            Music.addInstrument(talonFXs[i]);
 //       }
         this.mMusic = mMusic;
         addRequirements(mMusic);
+
+        talonFXs = talons;
     }
 
     @Override
     public void initialize() {
         SmartDashboard.putString("Music Player", "Activated");
-        Music.loadSong(Music.playlistOrder());
+        mMusic.loadSong(Music.playlistOrder());
+
+        Music.init(talonFXs);
     }
 
 //A for Play
@@ -34,29 +39,21 @@ public class MusicCMD extends CommandBase {
 
     @Override
     public void execute() {
-        
-        mMusic.setSpeed(xDrive.getLeftTriggerAxis()* 0.5);
         if (xDrive.getAButton()) {  
-            Music.playSong();
-            System.out.println("CMD1");
+            mMusic.playSong();
         }
         if (xDrive.getBButton()) {
-            Music.pauseSong();
-            System.out.println("CMD2");
+            mMusic.pauseSong();
         }
         if (xDrive.getYButton()) {
-            Music.loadSong(Music.playlistOrder());
-//            Music.loadSong(null);
-            System.out.println("CMD1");
-        if (xDrive.getXButton()) {
-            System.out.println("CMD4");
+            mMusic.loadSong(Music.playlistOrder());
         }
-}
-        Music.defaultCode();
+        if (xDrive.getXButton()) {
+        }
+        mMusic.defaultCode();
     }
 
     public void end() {
         SmartDashboard.putString("Music Player", "Deactivated");
-        System.out.println("Ended");
     }
 }

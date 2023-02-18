@@ -81,11 +81,8 @@ public class RobotContainer {
             //Music Selector  
         Music mMusic = Music.getInstance();
         mMusic.setDefaultCommand(new MusicCMD(
-            Music.getInstance()
-//            Music.talon1,
-//            Music.talon2,
-//            Music.talon3,
-//            Music.talon4
+            Music.getInstance(),
+            Drivetrain.getTalonFXs()
         )
         );        
 
