@@ -1,18 +1,24 @@
-package frc.robot;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
+package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.MusicCMD;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
+import frc.robot.autos.rotation;
+import frc.robot.commands.AestheticsCMD.LightReqCMD;
+import frc.robot.commands.Arm.ChangeSetPoint;
+import frc.robot.commands.Arm.FineAdjust;
+import frc.robot.commands.Arm.SetArmPosition;
+import frc.robot.commands.Arm.temp_ChangeSetPoint;
+import frc.robot.commands.Autos.Balance;
+import frc.robot.commands.Hand.ToggleHolding;
+import frc.robot.commands.Swerve.Flatten;
+import frc.robot.commands.Swerve.TeleopSwerve;
 import frc.robot.subsystems.*;
+import frc.robot.subsystems.Arm.ArmPosition;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -22,41 +28,16 @@ import frc.robot.subsystems.*;
  */
 public class RobotContainer {
     /* Controllers */
-    private final XboxController xDrive = new XboxController(OperatorConstants.kDriverControllerPort);
-
-
-    // private final Hand mHand = Hand.getInstance();
-    // private final Arm mArm = Arm.getInstance();
-
-  //private final Drivetrain mDrivetrain = Drivetrain.getInstance();
-//   private final Vision mVision = Vision.getInstance();
-
-    /* Driver Buttons
-    private final JoystickButton zeroGyro = new JoystickButton(mDriverController, XboxController.Button.kBack.value);
-    private final JoystickButton robotCentric = new JoystickButton(mDriverController, XboxController.Button.kLeftBumper.value);
-    */
-
+    private final XboxController mDriverController = new XboxController(0);
+    private final XboxController mManipController = new XboxController(1);
+  
     /* Subsystems */
+    private final Swerve s_Swerve = Swerve.getInstance();
+    private final Arm s_Arm = Arm.getInstance();
+    private final Hand s_Hand = Hand.getInstance();
 
-    private final Drivetrain mDrivetrain = new Drivetrain();
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
-        
-        // if(mDriverController.getAButton()) {
-        //     new Flatten(0.3); 
-        // } else if(mDriverController.getBButton()) {
-        //     new balance();
-        // } else {
-        //     s_Swerve.setDefaultCommand(
-        //         new TeleopSwerve(
-        //             () -> -mDriverController.getRawAxis(translationAxis), 
-        //             () -> -mDriverController.getRawAxis(strafeAxis), 
-        //             () -> -mDriverController.getRawAxis(rotationAxis), 
-        //             () -> robotCentric.getAsBoolean()
-        //         )
-        //     );
-        // }
-        // Configure the button bindings
         configureButtonBindings();
     }
 
@@ -67,33 +48,59 @@ public class RobotContainer {
      * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
     private void configureButtonBindings() {
-        /* Driver Buttons */
-        // s_Swerve.setDefaultCommand(
-        //     new TeleopSwerve(
-        //         () -> -mDriverController.getRawAxis(translationAxis), 
-        //         () -> -mDriverController.getRawAxis(strafeAxis), 
-        //         () -> -mDriverController.getRawAxis(rotationAxis), 
-        //         () -> true
-        //     )
-        // );
-        // // Configure the button bindings
+        s_Swerve.setDefaultCommand(
+            new TeleopSwerve(
+                () -> -mDriverController.getLeftY(), 
+                () -> -mDriverController.getLeftX(), 
+                () -> -mDriverController.getRightX(), 
+                () ->  mDriverController.getAButton()
+            )
+        );
 
-            //Music Selector  
-        Music mMusic = Music.getInstance();
-        mMusic.setDefaultCommand(new MusicCMD(
-            Music.getInstance(),
-            Drivetrain.getTalonFXs()
-        )
-        );        
+        new JoystickButton(mDriverController, XboxController.Button.kY.value).whileTrue(new Flatten(0.3));
+        new JoystickButton(mDriverController, XboxController.Button.kX.value).whileTrue(new Balance());
+        new JoystickButton(mDriverController, XboxController.Button.kBack.value).toggleOnTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
 
-        // s_Arm.setShoulderMotorPower(mManipController.getLeftY());
-        // s_Arm.setElbowMotorPower(mManipController.getRightY());
+        s_Arm.setDefaultCommand(
+            new FineAdjust(
+                () -> mManipController.getLeftY(),
+                () -> mManipController.getRightY()
+            )
+        );
+        /** Can Delete later, is a fine adjust alternative */
+        s_Arm.setDefaultCommand(
+            new temp_ChangeSetPoint(
+                () -> -mManipController.getLeftTriggerAxis(),
+                () -> -mManipController.getRightTriggerAxis()
+            )
+        );
+        
+        
+        
+        
+        // new JoystickButton(mManipController, XboxController.Button.kLeftBumper.value).toggleOnTrue(new SetArmPosition(Arm.ArmPosition.kHighPositionCone));
+        // new JoystickButton(mManipController, XboxController.Button.kX.value).whenPressed(new SetArmPosition(Arm.ArmPosition.kMediumPositionCone));
+        // new JoystickButton(mManipController, XboxController.Button.kRightBumper.value).whenPressed(new SetArmPosition(Arm.ArmPosition.kHighPositionCube));
+        // new JoystickButton(mManipController, XboxController.Button.kB.value).whenPressed(new SetArmPosition(Arm.ArmPosition.kMediumPositionCube));
+        // new JoystickButton(mManipController, XboxController.Button.kA.value).whenPressed(new SetArmPosition(Arm.ArmPosition.kStowPosition));
+        // new JoystickButton(mManipController, XboxController.Button.kLeftStick.value).whenPressed(new SetArmPosition(Arm.ArmPosition.kIntakePosition));
 
+        new JoystickButton(mManipController, XboxController.Button.kLeftBumper.value).whileTrue(new ToggleHolding());
+        new JoystickButton(mManipController, XboxController.Button.kY.value).whileTrue(new SetArmPosition(ArmPosition.kHighPosition, s_Hand.getHolding()));
+        new JoystickButton(mManipController, XboxController.Button.kB.value).whileTrue(new SetArmPosition(ArmPosition.kMediumPosition, s_Hand.getHolding()));
+        new JoystickButton(mManipController, XboxController.Button.kA.value).whileTrue(new SetArmPosition(ArmPosition.kLowPosition, s_Hand.getHolding()));
+        new JoystickButton(mManipController, XboxController.Button.kX.value).whileTrue(new SetArmPosition(ArmPosition.kIntakePosition, s_Hand.getHolding()));
 
-        // zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
+        new JoystickButton(mManipController, XboxController.Button.kRightBumper.value).whileTrue(new SetArmPosition(ArmPosition.kLoadingZonePosition, s_Hand.getHolding()));
+
+        new POVButton(mManipController, 270).toggleOnTrue(new LightReqCMD(270));
+        new POVButton(mManipController, 180).toggleOnTrue(new LightReqCMD(180));
+        new POVButton(mManipController, 90).toggleOnTrue(new LightReqCMD(90));
     }
 
     public Command getAutonomousCommand() {
-        return null;
+        // An ExampleCommand will run in autonomous
+        return new rotation(s_Swerve, 30);
     }
+
 }
