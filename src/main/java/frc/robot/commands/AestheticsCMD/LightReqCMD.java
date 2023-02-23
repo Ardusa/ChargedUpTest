@@ -28,9 +28,7 @@ public class LightReqCMD extends CommandBase {
     }
 
     @Override
-    public void initialize() {
-        mLighting.startLights();
-    }
+    public void initialize() {}
 
     @Override
     public void execute() {

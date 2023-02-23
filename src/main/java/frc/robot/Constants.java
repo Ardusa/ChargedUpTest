@@ -34,6 +34,8 @@ public final class Constants {
           public static final double kLinFuncConstant = 0.562;
     
           public static final double kNoSpeed = 0;
+
+          public static final double kJoyStickDeadZone = 0.05;
         }
 
         public static final COTSFalconSwerveConstants chosenModule =  //TODO: This must be tuned to specific robot

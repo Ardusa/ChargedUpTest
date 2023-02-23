@@ -47,17 +47,19 @@ public class Music extends SubsystemBase {
         for (int i = 0; i < talons.length; i++) {
             if (instrumentNum <= 5) {
                     mOrchestra.addInstrument(talons[i]);
+                    System.out.println("Added instrument to mOrchestra");
             } else {
                     nOrchestra.addInstrument(talons[i]);
+                    System.out.println("Added instrument to nOrchestra");
             }
             instrumentNum++;
+            System.out.println(instrumentNum);
         }
     }
     
     public void defaultCode() {
         if (mOrchestra.getCurrentTime() >= (songLength[SongNum] + crossfade)) {
             loadSong(playlistOrder());
-            playSong();
         }
         SmartDashboard.putNumber("TimeStamp", mOrchestra.getCurrentTime());
         SmartDashboard.putString("Song", Song);

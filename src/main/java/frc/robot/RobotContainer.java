@@ -14,6 +14,7 @@ import frc.robot.commands.Arm.FineAdjust;
 import frc.robot.commands.Arm.SetArmPosition;
 import frc.robot.commands.Arm.temp_ChangeSetPoint;
 import frc.robot.commands.Autos.Balance;
+import frc.robot.commands.Hand.ToggleGrip;
 import frc.robot.commands.Hand.ToggleHolding;
 import frc.robot.commands.Swerve.Flatten;
 import frc.robot.commands.Swerve.TeleopSwerve;
@@ -50,9 +51,15 @@ public class RobotContainer {
     private void configureButtonBindings() {
         s_Swerve.setDefaultCommand(
             new TeleopSwerve(
-                () -> -mDriverController.getLeftY(), 
-                () -> -mDriverController.getLeftX(), 
-                () -> -mDriverController.getRightX(), 
+                (mDriverController.getLeftY() < -Constants.Swerve.CustomDeadzone.kJoyStickDeadZone || mDriverController.getLeftY() > Constants.Swerve.CustomDeadzone.kJoyStickDeadZone) ?
+                    () -> -mDriverController.getLeftY() :
+                    () -> 0,
+                (mDriverController.getLeftX() < -Constants.Swerve.CustomDeadzone.kJoyStickDeadZone || mDriverController.getLeftX() > Constants.Swerve.CustomDeadzone.kJoyStickDeadZone) ?
+                    () -> -mDriverController.getLeftX() :
+                    () -> 0, 
+                (mDriverController.getRightX() < -Constants.Swerve.CustomDeadzone.kJoyStickDeadZone || mDriverController.getRightX() > Constants.Swerve.CustomDeadzone.kJoyStickDeadZone) ?
+                    () -> -mDriverController.getRightX() :
+                    () -> 0, 
                 () ->  mDriverController.getAButton()
             )
         );
@@ -85,17 +92,19 @@ public class RobotContainer {
         // new JoystickButton(mManipController, XboxController.Button.kA.value).whenPressed(new SetArmPosition(Arm.ArmPosition.kStowPosition));
         // new JoystickButton(mManipController, XboxController.Button.kLeftStick.value).whenPressed(new SetArmPosition(Arm.ArmPosition.kIntakePosition));
 
-        new JoystickButton(mManipController, XboxController.Button.kLeftBumper.value).whileTrue(new ToggleHolding());
+        new JoystickButton(mManipController, XboxController.Button.kStart.value).whileTrue(new ToggleHolding());
         new JoystickButton(mManipController, XboxController.Button.kY.value).whileTrue(new SetArmPosition(ArmPosition.kHighPosition, s_Hand.getHolding()));
         new JoystickButton(mManipController, XboxController.Button.kB.value).whileTrue(new SetArmPosition(ArmPosition.kMediumPosition, s_Hand.getHolding()));
-        new JoystickButton(mManipController, XboxController.Button.kA.value).whileTrue(new SetArmPosition(ArmPosition.kLowPosition, s_Hand.getHolding()));
+        new JoystickButton(mManipController, XboxController.Button.kA.value).whileTrue(new SetArmPosition(ArmPosition.kStowPosition, s_Hand.getHolding()));
         new JoystickButton(mManipController, XboxController.Button.kX.value).whileTrue(new SetArmPosition(ArmPosition.kIntakePosition, s_Hand.getHolding()));
 
         new JoystickButton(mManipController, XboxController.Button.kRightBumper.value).whileTrue(new SetArmPosition(ArmPosition.kLoadingZonePosition, s_Hand.getHolding()));
 
-        new POVButton(mManipController, 270).toggleOnTrue(new LightReqCMD(270));
-        new POVButton(mManipController, 180).toggleOnTrue(new LightReqCMD(180));
-        new POVButton(mManipController, 90).toggleOnTrue(new LightReqCMD(90));
+        new JoystickButton(mManipController, XboxController.Button.kLeftBumper.value).whileTrue(new ToggleGrip());
+
+        new POVButton(mManipController, 270).whileTrue(new LightReqCMD(270));
+        new POVButton(mManipController, 180).whileTrue(new LightReqCMD(180));
+        new POVButton(mManipController, 90).whileTrue(new LightReqCMD(90));
     }
 
     public Command getAutonomousCommand() {

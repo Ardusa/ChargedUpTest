@@ -17,10 +17,6 @@ public class Lighting extends SubsystemBase {
     }
     
     public Lighting() {
-        startLights();
-    }
-
-    public void startLights() {
         blinken = new Spark(Arm.blinkenPWM_ID);
     }
 
@@ -30,6 +26,6 @@ public class Lighting extends SubsystemBase {
     }
 
     public void killLights() {
-        blinken.close();
+        blinken.set(0.99);
     }
 }
