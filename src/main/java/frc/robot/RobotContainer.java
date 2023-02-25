@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.autos.rotation;
 import frc.robot.commands.AestheticsCMD.LightReqCMD;
+import frc.robot.commands.AestheticsCMD.MusicCMD;
 import frc.robot.commands.Arm.ChangeSetPoint;
 import frc.robot.commands.Arm.FineAdjust;
 import frc.robot.commands.Arm.SetArmPosition;
@@ -36,6 +37,7 @@ public class RobotContainer {
     private final Swerve s_Swerve = Swerve.getInstance();
     private final Arm s_Arm = Arm.getInstance();
     private final Hand s_Hand = Hand.getInstance();
+    public static boolean musicTrue = false;
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
@@ -82,9 +84,6 @@ public class RobotContainer {
             )
         );
         
-        
-        
-        
         // new JoystickButton(mManipController, XboxController.Button.kLeftBumper.value).toggleOnTrue(new SetArmPosition(Arm.ArmPosition.kHighPositionCone));
         // new JoystickButton(mManipController, XboxController.Button.kX.value).whenPressed(new SetArmPosition(Arm.ArmPosition.kMediumPositionCone));
         // new JoystickButton(mManipController, XboxController.Button.kRightBumper.value).whenPressed(new SetArmPosition(Arm.ArmPosition.kHighPositionCube));
@@ -112,4 +111,8 @@ public class RobotContainer {
         return new rotation(s_Swerve, 30);
     }
 
+    public Command musicCommand() {
+        final Command musicCMD = new MusicCMD();
+        return musicCMD;
+    }
 }

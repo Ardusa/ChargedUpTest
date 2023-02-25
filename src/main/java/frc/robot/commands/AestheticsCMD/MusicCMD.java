@@ -13,7 +13,8 @@ public class MusicCMD extends CommandBase {
 
     @Override
     public void initialize() {
-        mArm.noiseOff();
+        mArm.mCompressor.disable();
+
         SmartDashboard.putBoolean("Music Player", mMusic.playerStatus());
         mMusic.loadSong(Music.playlistOrder());
     }
@@ -32,6 +33,7 @@ public class MusicCMD extends CommandBase {
     }
 
     public void end() {
+        mArm.mCompressor.enableDigital();
         SmartDashboard.putString("Music Player", "Deactivated");
     }
 }

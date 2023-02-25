@@ -1,7 +1,10 @@
 package frc.robot.subsystems.Aesthetics;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.subsystems.Arm;
 
 import java.io.File;
 
@@ -10,14 +13,21 @@ import com.ctre.phoenix.music.Orchestra;
 
 public class Music extends SubsystemBase {
     private static Music mMusic;
-    private static Orchestra mOrchestra = new Orchestra();
-    private static Orchestra nOrchestra = new Orchestra();
+    private static Orchestra mOrchestra;
+    private static Orchestra nOrchestra;
+    private final Arm mArm;
     
     private static String Song;
-    private static int instrumentNum = 0;
+    private static int instrumentNum;
     
-    private static boolean Status;
-    public static String[] playlist = {
+    private boolean Status;
+    
+    private static int rawPlaylistLength;
+    private static int SongNum;
+    
+    private final Command crossfade;
+    
+    public static final String[] playlist = {
         "TwinkleStar.chrp",
         "HotCrossBuns.chrp"
     };
@@ -27,11 +37,17 @@ public class Music extends SubsystemBase {
         29000
     };
 
-    public static int x = playlist.length;
-    public static int playlistLength = playlist.length;
-    public static int SongNum = playlistLength - 1;
-
-    private final int crossfade = 1000;
+    
+    public Music() {
+        mOrchestra = new Orchestra();
+        nOrchestra = new Orchestra();
+        mArm = new Arm();
+        crossfade = new WaitCommand(1);
+        
+        instrumentNum = 0;
+        rawPlaylistLength = (playlist.length - 1);
+        SongNum = - 1;
+    }    
 
     public static Music getInstance() {
         if (mMusic == null) {
@@ -40,8 +56,15 @@ public class Music extends SubsystemBase {
         return mMusic;
     }    
     
-    public Music() {
-    }    
+    public void defaultCode() {
+        if (mOrchestra.getCurrentTime() >= songLength[SongNum]) {
+            loadSong(playlistOrder());
+            crossfade.schedule();
+            playSong();
+        }
+        SmartDashboard.putNumber("TimeStamp", mOrchestra.getCurrentTime());
+        SmartDashboard.putString("Song", Song);
+    }
 
     public static void insertInstrument(TalonFX ... talons) {
         for (int i = 0; i < talons.length; i++) {
@@ -57,12 +80,19 @@ public class Music extends SubsystemBase {
         }
     }
     
-    public void defaultCode() {
-        if (mOrchestra.getCurrentTime() >= (songLength[SongNum] + crossfade)) {
-            loadSong(playlistOrder());
+    public void loadSong(String filename) {
+        Song = filename;
+        mOrchestra.loadMusic(File.separator + "home" + File.separator + "lvuser" + File.separator + "deploy" + File.separator + filename);
+        nOrchestra.loadMusic(File.separator + "home" + File.separator + "lvuser" + File.separator + "deploy" + File.separator + filename);
+    }
+
+    public static String playlistOrder() {
+        if (SongNum == (rawPlaylistLength)) {
+            SongNum = 0;
+        } else {
+            SongNum++;
         }
-        SmartDashboard.putNumber("TimeStamp", mOrchestra.getCurrentTime());
-        SmartDashboard.putString("Song", Song);
+        return playlist[SongNum];
     }
 
     public void playSong() {
@@ -70,30 +100,11 @@ public class Music extends SubsystemBase {
         nOrchestra.play();
     }
     
-    public void loadSong(String filename) {
-        Song = filename;
-        mOrchestra.loadMusic(File.separator + "home" + File.separator + "lvuser" + File.separator + "deploy" + File.separator + filename);
-        nOrchestra.loadMusic(File.separator + "home" + File.separator + "lvuser" + File.separator + "deploy" + File.separator + filename);
-    }
-    
     public void pauseSong() {
         mOrchestra.pause();
         nOrchestra.pause();
     }
         
-    public static String playlistOrder() {
-        if (SongNum == (playlistLength - 1)) {
-            SongNum = 0;
-        } else {
-            SongNum++;
-        }
-        return playlist[SongNum];
-    }
-    
-    public void skipSong() {
-        loadSong(playlistOrder());
-    }
-
     public boolean playerStatus() {
         Status = mOrchestra.isPlaying();
         SmartDashboard.putBoolean("Song Playing", Status);
@@ -101,7 +112,16 @@ public class Music extends SubsystemBase {
     }
 
     public void restartPlaylist() {
-        SongNum = (playlistLength - 1);
+        SongNum = (rawPlaylistLength);
         loadSong(playlistOrder());
     }
+
+    /** Disables all noise sources on robot
+     * @see Compressor */
+/*
+     public void initialization() {
+        mArm.mCompressor.disable();
+    }
+*/
+
 }

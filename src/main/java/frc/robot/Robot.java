@@ -28,11 +28,13 @@ public class Robot extends TimedRobot {
 
   private Command m_autonomousCommand;
   private RobotContainer m_robotContainer;
+  private Command music;
+  private PITTest pitTest;
+
   // private frc.robot.subsystems.Arm mArm = new frc.robot.subsystems.Arm();
   
   final Command startPOS = new SetArmPosition(ArmPosition.kStowPosition, true);
   /** Destroy after use */
-  final Command music = new MusicCMD();
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -43,7 +45,7 @@ public class Robot extends TimedRobot {
     ctreConfigs = new CTREConfigs();
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
-    //m_robotContainer = new RobotContainer();
+    m_robotContainer = new RobotContainer();
   }
 
   /**
@@ -92,8 +94,8 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-    //startPOS.schedule();
-    music.schedule();
+
+    startPOS.schedule();
     System.out.println("Music ran");
   }
 
@@ -105,8 +107,15 @@ public class Robot extends TimedRobot {
 
   @Override
   public void testInit() {
-    // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
+    
+    if (RobotContainer.musicTrue) {
+      music = m_robotContainer.musicCommand();
+    } else {
+      pitTest = new PITTest();
+    }
+
+    // Cancels all running commands at the start of test mode.
   }
 
   /** This function is called periodically during test mode. */

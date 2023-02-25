@@ -352,7 +352,23 @@ public class Arm extends SubsystemBase{
         mShoulderOffset += o;
     }
 
-    public void noiseOff() {
-        mCompressor.disable();
+    public Double getCanCoder(String string) {
+        if (string == "shoulder") {
+            return mShoulderCanCoder.getAbsolutePosition();
+        } else if (string == "elbow") {
+            return mElbowCanCoder.getAbsolutePosition();
+        } else {
+            return null;
+        }
+    }
+
+    public Double getTemperature(String string) {
+        if (string == "shoulder") {
+            return mShoulderMotor.getTemperature();
+        } else if (string == "elbow") {
+            return mElbowMotor.getTemperature();
+        } else {
+            return null;
+        }
     }
 } 
