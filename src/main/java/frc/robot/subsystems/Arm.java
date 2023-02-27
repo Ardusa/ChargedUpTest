@@ -352,23 +352,28 @@ public class Arm extends SubsystemBase{
         mShoulderOffset += o;
     }
 
-    public Double getCanCoder(String string) {
-        if (string == "shoulder") {
+    public Double getCanCoder(String joint) {
+        if (joint == "shoulder") {
             return mShoulderCanCoder.getAbsolutePosition();
-        } else if (string == "elbow") {
+        } else if (joint == "elbow") {
             return mElbowCanCoder.getAbsolutePosition();
         } else {
             return null;
         }
     }
 
-    public Double getTemperature(String string) {
-        if (string == "shoulder") {
+    public Double getTemperature(String joint) {
+        if (joint == "shoulder") {
             return mShoulderMotor.getTemperature();
-        } else if (string == "elbow") {
+        } else if (joint == "elbow") {
             return mElbowMotor.getTemperature();
         } else {
             return null;
         }
+    }
+
+    public void setPower(double shoulder, double elbow) {
+        mShoulderMotor.set(ControlMode.PercentOutput, shoulder);
+        mElbowMotor.set(ControlMode.PercentOutput, elbow);
     }
 } 
