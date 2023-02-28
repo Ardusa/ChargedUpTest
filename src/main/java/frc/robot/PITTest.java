@@ -1,6 +1,8 @@
 package frc.robot;
 
 import java.util.ArrayList;
+import java.util.function.DoubleSupplier;
+import java.util.function.IntSupplier;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.PowerDistribution;
@@ -23,6 +25,7 @@ import frc.robot.commands.Hand.ToggleGrip;
 import frc.robot.commands.Swerve.TeleopSwerve;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Aesthetics.Lighting;
+import frc.robot.subsystems.Aesthetics.Music;
 import frc.robot.subsystems.Arm.ArmPosition;
 import frc.robot.subsystems.Swerve;
 
@@ -68,7 +71,7 @@ public class PITTest extends SequentialCommandGroup {
     final Command beep;
 
     public PITTest() {
-        this.addRequirements(Swerve.getInstance(), Hand.getInstance(), Arm.getInstance(), Lighting.getInstance());
+        this.addRequirements(Swerve.getInstance(), Hand.getInstance(), Arm.getInstance(), Lighting.getInstance(), Music.getInstance());
         
         Shuffleboard.getTab("Pit Test");
         setName("PIT Test");
@@ -80,20 +83,23 @@ public class PITTest extends SequentialCommandGroup {
         beep = new WarningBeep();
         wait = new WaitCommand(1);
         new JoystickButton(xDrive, XboxController.Button.kA.value).onTrue(scheduleCommand(0).beforeStarting(beep).beforeStarting(wait));
-        new POVButton(xDrive, 90).debounce(1).onTrue(scheduleCommand(commandNum++).beforeStarting(beep).beforeStarting(wait));
-        new POVButton(xDrive, 270).debounce(1).onTrue(scheduleCommand(commandNum--).beforeStarting(beep).beforeStarting(wait));
+        IntSupplier input = () -> xDrive.getPOV();
+        // new POVButton(xDrive, 90).debounce(1).onTrue(new (commandNum++).beforeStarting(beep).beforeStarting(wait));
+        // new POVButton(xDrive, 270).debounce(1).onTrue(scheduleCommand(commandNum--).beforeStarting(beep).beforeStarting(wait));
 
-        // if (input.getAsInt() == 90) {
-        //     beep.schedule();
-        //     scheduleCommand(commandNum++);
-        // } else if (input.getAsInt() == 180) {
-        //     beep.schedule();
-        //     scheduleCommand(commandNum--);
-        // } else {
-        //     if (currCommand.isFinished()) {
-        //         scheduleCommand(commandNum);
-        //     }
-        // }
+        if (input.getAsInt() == 90) {
+            wait.schedule();
+            beep.schedule();
+            scheduleCommand(commandNum++).schedule();;
+        } else if (input.getAsInt() == 270) {
+            wait.schedule();
+            beep.schedule();
+            scheduleCommand(commandNum--).schedule();
+        } else {
+            if (currCommand.isFinished()) {
+                scheduleCommand(commandNum);
+            }
+        }
     }
 
     private Command scheduleCommand(int commandNum) {
@@ -105,7 +111,7 @@ public class PITTest extends SequentialCommandGroup {
             Command x = commandList[commandNum];
             currCommand = x;
             SmartDashboard.putString("PIT Test Status", currCommand.getName());
-            addCommands(x);
+            return x;
         }
         return null;
     }

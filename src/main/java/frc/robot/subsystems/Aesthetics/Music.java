@@ -17,8 +17,8 @@ public class Music extends SubsystemBase {
     private static Music mMusic;
     private static Arm mArm;
     private static Swerve mSwerve;
-    private static Orchestra mOrchestra;
-    private static Orchestra nOrchestra;
+    private static Orchestra mOrchestra = new Orchestra();
+    private static Orchestra nOrchestra = new Orchestra();
     
     private static String Song;
     private static int instrumentNum;
@@ -37,6 +37,7 @@ public class Music extends SubsystemBase {
     };
     
     public static int[] songLength = {
+        8000,
         29000, //Seconds
         29000
     };
@@ -45,8 +46,8 @@ public class Music extends SubsystemBase {
     public Music() {
         mArm = Arm.getInstance();
         mSwerve = Swerve.getInstance();
-        mOrchestra = new Orchestra();
-        nOrchestra = new Orchestra();
+        // mOrchestra = new Orchestra();
+        // nOrchestra = new Orchestra();
         crossfade = new WaitCommand(1);
         
         instrumentNum = 0;
@@ -72,12 +73,12 @@ public class Music extends SubsystemBase {
     }
 
     public static void insertInstrument(TalonFX ... talons) {
-        for (int i = 0; i < talons.length; i++) {
+        for (TalonFX talon : talons) {
             if (instrumentNum <= 5) {
-                    mOrchestra.addInstrument(talons[i]);
+                    mOrchestra.addInstrument(talon);
                     System.out.println("Added instrument to mOrchestra");
             } else {
-                    nOrchestra.addInstrument(talons[i]);
+                    nOrchestra.addInstrument(talon);
                     System.out.println("Added instrument to nOrchestra");
             }
             instrumentNum++;
