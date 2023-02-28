@@ -27,7 +27,6 @@ public class Robot extends TimedRobot {
 
   // private frc.robot.subsystems.Arm mArm = new frc.robot.subsystems.Arm();
   
-  final Command startPOS = new SetArmPosition(ArmPosition.kStowPosition, true);
   /** Destroy after use */
 
   /**
