@@ -376,4 +376,9 @@ public class Arm extends SubsystemBase{
         mShoulderMotor.set(ControlMode.PercentOutput, shoulder);
         mElbowMotor.set(ControlMode.PercentOutput, elbow);
     }
+
+    public void setSound(double hertz) {
+        mShoulderMotor.set(ControlMode.MusicTone, hertz);
+        mElbowMotor.set(ControlMode.MusicTone, hertz);
+    }
 } 

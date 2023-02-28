@@ -252,7 +252,7 @@ public final class Constants {
 
     public static final int smoothingFactor = 2; // Arbitrary 1-8
   
-    public static final int blinkenPWM_ID = 0;
+    public static final int blinken_ID = 0;
   }
 
   public static class Hand {

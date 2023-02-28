@@ -4,6 +4,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.SwerveModule;
+import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Swerve;
 
 import java.io.File;
 
@@ -12,6 +15,8 @@ import com.ctre.phoenix.music.Orchestra;
 
 public class Music extends SubsystemBase {
     private static Music mMusic;
+    private static Arm mArm;
+    private static Swerve mSwerve;
     private static Orchestra mOrchestra;
     private static Orchestra nOrchestra;
     
@@ -38,6 +43,8 @@ public class Music extends SubsystemBase {
 
     
     public Music() {
+        mArm = Arm.getInstance();
+        mSwerve = Swerve.getInstance();
         mOrchestra = new Orchestra();
         nOrchestra = new Orchestra();
         crossfade = new WaitCommand(1);
@@ -122,4 +129,10 @@ public class Music extends SubsystemBase {
     }
 */
 
+    public void warningSound(double hertz) {
+        mArm.setSound(hertz);
+        for (SwerveModule mod : mSwerve.mSwerveMods) {
+            mod.warningSound(hertz);
+        }
+    }
 }
